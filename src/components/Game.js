@@ -34,12 +34,12 @@ class Game extends Component{
         if (userGuessIsCorrect) {
             correctGuesses.push(cellId);
             if (correctGuesses.length === this.props.activeCellsCount) {
-                gameState = "won";
+                gameState = this.finishGame("won");
             }
         } else {
             wrongGuesses.push(cellId);
             if (wrongGuesses.length > this.props.allowedWrongAttempts) {
-                gameState = "lost";
+                gameState = this.finishGame("lost");
             }
         }
         this.setState({ correctGuesses, wrongGuesses ,gameState});
@@ -50,17 +50,25 @@ class Game extends Component{
             this.secondsRemaining = this.props.timeoutSeconds; 
             setInterval(() => {
                 if (--this.secondsRemaining === 0) { 
-                    this.setState({ gameState: "lost" });
+                    this.setState({ gameState: this.finishGame("lost") });
                 }
             }, 1000);
         }); 
     }
+    // 结束游戏
+    finishGame(gameState) { 
+        clearInterval(this.playTimerId); 
+        return gameState;
+    }
     componentDidMount () {
-        setTimeout(() => {
+       this.memorizeTimerId = setTimeout(() => {
             this.setState({ gameState: 'memorize' }, () => {
-                setTimeout(this.startRecallMode.bind(this), 2000);
+                this.recallTimerId = setTimeout(this.startRecallMode.bind(this), 2000);
             });
         }, 2000);
+    }
+    componentWillUnmount() { 
+        clearTimeout(this.memorizeTimerId); clearTimeout(this.recallTimerId); this.finishGame();
     }
     render () {
         console.log(this.state)
