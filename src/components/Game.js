@@ -93,6 +93,7 @@ class Game extends Component{
             <Footer gameState={this.state.gameState}
                     correctGuesses={this.state.correctGuesses}
                     activeCellsCount={this.props.activeCellsCount}
+                    playAgain={this.props.createNewGame}
                 />
             </div>
         )

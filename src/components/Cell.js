@@ -29,9 +29,7 @@ class Cell extends Component {
         }
         className += " guess-" + this.guessState();
         return (
-            <div className={className} onClick={this.handleClick.bind(this)}>
-                {this.props.id}
-            </div>
+            <div className={className} onClick={this.handleClick.bind(this)} />
         )
     }
 }
