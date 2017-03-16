@@ -23,7 +23,8 @@ class Cell extends Component {
     }
     render () {
         let className = "cell";
-        if (this.props.gameState === "memorize" && this.active()) {
+        console.log(this.props.showActiveCells)
+        if (this.props.showActiveCells && this.active()) {
             className += " active";
         }
         className += " guess-" + this.guessState();

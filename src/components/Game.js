@@ -44,15 +44,28 @@ class Game extends Component{
         }
         this.setState({ correctGuesses, wrongGuesses ,gameState});
     }
+    // 限制游戏时间，超过时间游戏结束
+    startRecallMode() {
+        this.setState({ gameState: 'recall' }, () => {
+            this.secondsRemaining = this.props.timeoutSeconds; 
+            setInterval(() => {
+                if (--this.secondsRemaining === 0) { 
+                    this.setState({ gameState: "lost" });
+                }
+            }, 1000);
+        }); 
+    }
     componentDidMount () {
         setTimeout(() => {
             this.setState({ gameState: 'memorize' }, () => {
-                setTimeout(() => this.setState({ gameState: 'recall' }), 2000);
+                setTimeout(this.startRecallMode.bind(this), 2000);
             });
         }, 2000);
     }
     render () {
         console.log(this.state)
+        // 判断游戏状态，在记忆或输掉时显示激活的格子
+        let showActiveCells = ["memorize", "lost"].indexOf(this.state.gameState) >= 0;
         return (
             <div className="grid">
             {this.state.matrix.map((row, index) => (
@@ -65,6 +78,7 @@ class Game extends Component{
                                             wrongGuesses={this.state.wrongGuesses}
                                             correctGuesses={this.state.correctGuesses}
                                             recordGuess={this.recordGuess}
+                                            showActiveCells={showActiveCells}
                                         />)}
                 </Row>
             ))}
