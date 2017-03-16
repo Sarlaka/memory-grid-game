@@ -30,13 +30,19 @@ class Game extends Component{
     }
     // 记录点击的方块
     recordGuess({ cellId, userGuessIsCorrect }) {
-        let { wrongGuesses, correctGuesses } = this.state;
+        let { wrongGuesses, correctGuesses, gameState } = this.state;
         if (userGuessIsCorrect) {
             correctGuesses.push(cellId);
+            if (correctGuesses.length === this.props.activeCellsCount) {
+                gameState = "won";
+            }
         } else {
             wrongGuesses.push(cellId);
+            if (wrongGuesses.length > this.props.allowedWrongAttempts) {
+                gameState = "lost";
+            }
         }
-        this.setState({ correctGuesses, wrongGuesses });
+        this.setState({ correctGuesses, wrongGuesses ,gameState});
     }
     componentDidMount () {
         setTimeout(() => {
@@ -62,7 +68,10 @@ class Game extends Component{
                                         />)}
                 </Row>
             ))}
-            <Footer gameState={this.state.gameState}/>
+            <Footer gameState={this.state.gameState}
+                    correctGuesses={this.state.correctGuesses}
+                    activeCellsCount={this.props.activeCellsCount}
+                />
             </div>
         )
     }
