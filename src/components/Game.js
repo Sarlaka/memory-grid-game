@@ -27,6 +27,7 @@ class Game extends Component{
             correctGuesses: []
         }
         this.recordGuess = this.recordGuess.bind(this)
+        this.nowScore = this.props.score;
     }
     // 记录点击的方块
     recordGuess({ cellId, userGuessIsCorrect }) {
@@ -48,7 +49,7 @@ class Game extends Component{
     startRecallMode() {
         this.setState({ gameState: 'recall' }, () => {
             this.secondsRemaining = this.props.timeoutSeconds; 
-            setInterval(() => {
+            this.playTimerId = setInterval(() => {
                 if (--this.secondsRemaining === 0) { 
                     this.setState({ gameState: this.finishGame("lost") });
                 }
@@ -57,7 +58,10 @@ class Game extends Component{
     }
     // 结束游戏
     finishGame(gameState) { 
-        clearInterval(this.playTimerId); 
+        clearInterval(this.playTimerId);
+        if(gameState === 'won'){
+            this.nowScore += 600 - 200*this.state.wrongGuesses.length;
+        }
         return gameState;
     }
     componentDidMount () {
@@ -94,6 +98,7 @@ class Game extends Component{
                     correctGuesses={this.state.correctGuesses}
                     activeCellsCount={this.props.activeCellsCount}
                     playAgain={this.props.createNewGame}
+                    score={this.nowScore}
                 />
             </div>
         )
